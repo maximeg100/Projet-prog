@@ -46,14 +46,27 @@ def convertir_grille_en_affichage(grille):
     res += barre
     return res
 
-grille = creer_grille_liste(4)
+n = int(input('Vous voulez une grille de combien'))
+grille = creer_grille_liste(n)
 ajouter_24_aleatoire(grille)
 
 grille_affichee = convertir_grille_en_affichage(grille)
 print(grille_affichee)
 
+def choix_joueur():
+    """
+    Demande à l'utilisateur une direction et vérifie qu'elle est valide.
+    """
+    directions = {'z': "haut", 'q': "gauche", 's': "bas", 'd': "droite"}
+    while True:
+        choix = input("Choisissez une direction : z = haut, q = gauche, s = bas, d = droite\n")
+        if choix in directions:
+            return choix
+        else:
+            print("Choix invalide, veuillez essayer à nouveau.")
 
 
+choix_joueur()
 
 
 
