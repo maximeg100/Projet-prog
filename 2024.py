@@ -1,13 +1,12 @@
 def creer_grille_liste(n):
     "crée une grille vide"
-    return [[' ' for _ in range(n)] for _ in range(n)]
+    return [[0 for _ in range(n)] for _ in range(n)]
 
 import random
 
 def ajouter_24_aleatoire(grille):
     """
-    Ajoute un 5 dans une case vide (' ') choisie aléatoirement dans la grille,
-    sans utiliser de liste en compréhension.
+    Ajoute un 2 ou un 4 dans une case vide choisie aléatoirement dans la grille
     """
     chiffre = [2,4]
     apparition1 = random.choice(chiffre)
@@ -15,7 +14,7 @@ def ajouter_24_aleatoire(grille):
     cases_vides = []
     for i in range(len(grille)):
         for j in range(len(grille[i])):
-            if grille[i][j] == ' ':
+            if grille[i][j] == 0:
                 cases_vides.append((i, j))
     
     i, j= random.choice(cases_vides)
@@ -27,7 +26,7 @@ def ajouter_24_aleatoire(grille):
 
 def convertir_grille_en_affichage(grille):
     """
-    Convertit la grille logique (liste de listes) en une grille affichable (string).
+    Convertit la grille logique (liste de listes) en une grille affichable
     """
     n = len(grille)
     res = ''
@@ -38,7 +37,7 @@ def convertir_grille_en_affichage(grille):
         ligne_remplie = ""
         for valeur in ligne:
             if valeur != ' ':
-                ligne_remplie += f"| {valeur}  "
+                ligne_remplie += f"|{valeur:>4}" #pour pas que la grille change de largeur si c'est un nombre a deux chiffres ou +
             else:
                 ligne_remplie += "|    "
         ligne_remplie += '|\n'
@@ -46,12 +45,6 @@ def convertir_grille_en_affichage(grille):
     res += barre
     return res
 
-n = int(input('Vous voulez une grille de combien'))
-grille = creer_grille_liste(n)
-ajouter_24_aleatoire(grille)
-
-grille_affichee = convertir_grille_en_affichage(grille)
-print(grille_affichee)
 
 def choix_joueur():
     """
@@ -66,7 +59,106 @@ def choix_joueur():
             print("Choix invalide, veuillez essayer à nouveau.")
 
 
-choix_joueur()
+def deplacer_a_gauche(ligne):
+    """
+    Déplace et combine les tuiles d'une ligne vers la gauche.
+    """
+    ligne_sans_zero = []
+    for valeur in ligne:
+        if valeur != 0:
+            ligne_sans_zero.append(valeur)
+    resultat = []
+    i = 0
+    while i < len(ligne_sans_zero):
+        if i < len(ligne_sans_zero) - 1 and ligne_sans_zero[i] == ligne_sans_zero[i + 1]:
+            resultat.append(ligne_sans_zero[i] * 2)
+            i += 2  
+        else:
+            resultat.append(ligne_sans_zero[i])
+            i += 1
+    
+    while len(resultat) < len(ligne):
+        resultat.append(0)
+    
+    return resultat
+
+
+def deplacer_a_droite(ligne):
+    """
+    Déplace et combine les tuiles d'une ligne vers la droite.
+    """
+    ligne_inverse = ligne[::-1]
+    ligne_deplacee = deplacer_a_gauche(ligne_inverse)
+    return ligne_deplacee[::-1]
 
 
 
+def deplacer_haut(grille):
+    """
+    Déplace les tuiles de chaque colonne vers le haut.
+    """
+    taille = len(grille)
+    for j in range(taille):
+        colonne = []
+        for i in range(taille):
+            colonne.append(grille[i][j])
+        colonne_deplacee = deplacer_a_gauche(colonne)
+        for i in range(taille):
+            grille[i][j] = colonne_deplacee[i]
+
+def deplacer_bas(grille):
+    """
+    Déplace les tuiles de chaque colonne vers le bas.
+    """
+    taille = len(grille)
+    for j in range(taille):
+        colonne = []
+        for i in range(taille):
+            colonne.append(grille[i][j])
+        colonne_deplacee = deplacer_a_droite(colonne)
+        for i in range(taille):
+            grille[i][j] = colonne_deplacee[i]
+
+
+
+def deplacer(grille, direction):
+    """
+    Déplace toutes les lignes ou colonnes dans la direction spécifiée.
+    direction peut être 'gauche', 'droite', 'haut', 'bas'.
+    """
+    if direction == 'gauche':
+        for i in range(len(grille)):
+            grille[i] = deplacer_a_gauche(grille[i])
+    elif direction == 'droite':
+        for i in range(len(grille)):
+            grille[i] = deplacer_a_droite(grille[i])
+    elif direction == 'haut':
+        deplacer_haut(grille)
+    elif direction == 'bas':
+        deplacer_bas(grille)
+
+
+nb_carré = int(input('Vous voulez une grille de combien ?'))
+grille = creer_grille_liste(nb_carré)
+ajouter_24_aleatoire(grille)
+print(grille)
+
+
+print("Grille initiale :")
+print(convertir_grille_en_affichage(grille))
+
+print("Déplacer à gauche :")
+deplacer(grille, 'gauche')
+print(convertir_grille_en_affichage(grille))
+
+print("Déplacer à droite :")
+deplacer(grille, 'droite')
+print(convertir_grille_en_affichage(grille))
+
+print("Déplacer vers le haut :")
+deplacer(grille, 'haut')
+print(convertir_grille_en_affichage(grille))
+
+print("Déplacer vers le bas :")
+deplacer(grille, 'bas')
+print(convertir_grille_en_affichage(grille))
