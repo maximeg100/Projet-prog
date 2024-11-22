@@ -4,13 +4,12 @@ def creer_grille_liste(n):
 
 import random
 
-def ajouter_24_aleatoire(grille):
+def ajouter_2_ou_4_aleatoire(grille):
     """
     Ajoute un 2 ou un 4 dans une case vide choisie aléatoirement dans la grille
     """
     chiffre = [2,4]
-    apparition1 = random.choice(chiffre)
-    apparition2 = random.choice(chiffre)
+    apparition = random.choice(chiffre)
     cases_vides = []
     for i in range(len(grille)):
         for j in range(len(grille[i])):
@@ -18,10 +17,7 @@ def ajouter_24_aleatoire(grille):
                 cases_vides.append((i, j))
     
     i, j= random.choice(cases_vides)
-    grille[i][j] = apparition1
-    cases_vides.remove((i,j))
-    i,j = random.choice(cases_vides)
-    grille[i][j] = apparition2
+    grille[i][j] = apparition
 
 
 def convertir_grille_en_affichage(grille):
@@ -126,39 +122,76 @@ def deplacer(grille, direction):
     Déplace toutes les lignes ou colonnes dans la direction spécifiée.
     direction peut être 'gauche', 'droite', 'haut', 'bas'.
     """
-    if direction == 'gauche':
+    if direction == 'q':
         for i in range(len(grille)):
             grille[i] = deplacer_a_gauche(grille[i])
-    elif direction == 'droite':
+    elif direction == 'd':
         for i in range(len(grille)):
             grille[i] = deplacer_a_droite(grille[i])
-    elif direction == 'haut':
+    elif direction == 'z':
         deplacer_haut(grille)
-    elif direction == 'bas':
+    elif direction == 's':
         deplacer_bas(grille)
 
 
-nb_carré = int(input('Vous voulez une grille de combien ?'))
-grille = creer_grille_liste(nb_carré)
-ajouter_24_aleatoire(grille)
-print(grille)
 
 
-print("Grille initiale :")
-print(convertir_grille_en_affichage(grille))
+def grille_est_pleine(grille):
+    for element in grille:
+        if 0 in element:
+            return False
+    return True
 
-print("Déplacer à gauche :")
-deplacer(grille, 'gauche')
-print(convertir_grille_en_affichage(grille))
+def mouvement_possible(grille):
+    n = len(grille)
+    for ligne in grille:
+        if 0 in ligne:
+            return True
 
-print("Déplacer à droite :")
-deplacer(grille, 'droite')
-print(convertir_grille_en_affichage(grille))
+    for i in range(n):
+        for j in range(n - 1): 
+            if grille[i][j] == grille[i][j + 1]:
+                return True
 
-print("Déplacer vers le haut :")
-deplacer(grille, 'haut')
-print(convertir_grille_en_affichage(grille))
+    for j in range(n):
+        for i in range(n - 1):  # Comparer avec la case du bas
+            if grille[i][j] == grille[i + 1][j]:
+                return True
+    
+    return False
 
-print("Déplacer vers le bas :")
-deplacer(grille, 'bas')
-print(convertir_grille_en_affichage(grille))
+def case_2048_existe(grille):
+    for element in grille:
+        if 2048 in element:
+            return True
+    return False
+
+
+
+def jouer_2048():
+    """
+    Boucle principale pour jouer au 2048.
+    """
+    nb_carre = int(input("Vous voulez une grille de quelle taille ?:  "))
+    grille = creer_grille_liste(nb_carre)
+    ajouter_2_ou_4_aleatoire(grille)
+    ajouter_2_ou_4_aleatoire(grille)
+
+    print("Grille initiale :")
+    print(convertir_grille_en_affichage(grille))
+    
+    while True:
+        if case_2048_existe(grille):
+            print("Félicitations ! Vous avez atteint 2048 !")
+            break
+        if not mouvement_possible(grille):
+            print("Perdu : aucun mouvement possible.")
+            break
+        direction = choix_joueur()
+        deplacer(grille, direction)
+        if not grille_est_pleine(grille):
+            ajouter_2_ou_4_aleatoire(grille)
+        print("Grille après le déplacement :")
+        print(convertir_grille_en_affichage(grille))
+
+jouer_2048()
