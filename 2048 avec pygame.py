@@ -11,7 +11,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (119, 110, 101)
 LIGHT_GRAY = (187, 173, 160)
-TILE_COLORS = {
+couleurs_tuiles = {
     0: (205, 193, 180),
     2: (238, 228, 218),
     4: (237, 224, 200),
@@ -28,20 +28,17 @@ TILE_COLORS = {
 
 SCREEN_SIZE = 600
 GRID_SIZE = 4
-TILE_SIZE = SCREEN_SIZE // GRID_SIZE
+TILE_SIZE = SCREEN_SIZE // GRID_SIZE 
 FONT = pygame.font.Font(None, 50)
 
 
 def creer_grille_liste(n):
-    "crée une grille vide"
+    "crée une grille carrée de n sur n avec des 0"
     return [[0 for _ in range(n)] for _ in range(n)]
 
-import random
 
 def ajouter_2_ou_4_aleatoire(grille):
-    """
-    Ajoute un 2 ou un 4 dans une case vide choisie aléatoirement dans la grille
-    """
+    "Ajoute un 2 ou un 4 dans une case vide choisie aléatoirement dans la grille"
     chiffre = [2,4]
     apparition = random.choice(chiffre)
     cases_vides = []
@@ -56,9 +53,7 @@ def ajouter_2_ou_4_aleatoire(grille):
 
 
 def deplacer_a_gauche(ligne,score):
-    """
-    Déplace et combine les tuiles d'une ligne vers la gauche.
-    """
+    "Déplace les tuiles de chaque colonne vers la gauche et les combine si elles sont égales, calcule le score"
     ligne_sans_zero = []
     for valeur in ligne:
         if valeur != 0:
@@ -81,9 +76,7 @@ def deplacer_a_gauche(ligne,score):
 
 
 def deplacer_a_droite(ligne,score):
-    """
-    Déplace et combine les tuiles d'une ligne vers la droite.
-    """
+    "Déplace les tuiles de chaque colonne vers la droite et les combine si elles sont égales, calcule le score"
     ligne_inverse = ligne[::-1]
     ligne_deplacee,score= deplacer_a_gauche(ligne_inverse,score)
     return ligne_deplacee[::-1], score
@@ -91,9 +84,7 @@ def deplacer_a_droite(ligne,score):
 
 
 def deplacer_haut(grille,score):
-    """
-    Déplace les tuiles de chaque colonne vers le haut.
-    """
+    "Déplace les tuiles de chaque colonne vers le haut et les combine si elles sont égales, calcule le score"
     taille = len(grille)
     for j in range(taille):
         colonne = []
@@ -105,9 +96,7 @@ def deplacer_haut(grille,score):
     return grille, score
 
 def deplacer_bas(grille,score):
-    """
-    Déplace les tuiles de chaque colonne vers le bas.
-    """
+    "Déplace les tuiles de chaque colonne vers le bas et les combine si elles sont égales, calcule le score"
     taille = len(grille)
     for j in range(taille):
         colonne = []
@@ -121,10 +110,8 @@ def deplacer_bas(grille,score):
 
 
 def deplacer(grille, direction, score):
-    """
-    Déplace toutes les lignes ou colonnes dans la direction spécifiée.
-    Renvoie la grille modifiée et le score mis à jour.
-    """
+    """Déplace toutes les lignes ou colonnes de la grille dans une direction direction
+    et calcule le score"""
     if direction == 'gauche': 
         for i in range(len(grille)):
             grille[i], score = deplacer_a_gauche(grille[i], score)
@@ -140,7 +127,7 @@ def deplacer(grille, direction, score):
 
 
 def grille_est_pleine(grille):
-    " Cette fonction renvoie le nombre de zero dans la grille"
+    "renvoie le nombre de zero dans la grille"
     compteur = 0
     for element in grille:
         for chiffre in element:
@@ -149,6 +136,7 @@ def grille_est_pleine(grille):
     return compteur
 
 def mouvement_possible(grille):
+    "renvoie true si on peut encore bouger"
     n = len(grille)
     for ligne in grille:
         if 0 in ligne:
@@ -167,12 +155,14 @@ def mouvement_possible(grille):
     return False
 
 def case_2048_existe(grille):
+    "renvoie true si il y a un 2048 dans une grille"
     for element in grille:
         if 2048 in element:
             return True
     return False
 
 def dessiner_grille(screen, grille, score):
+    "dessine la grille sur pygame en la mettant à jour"
     screen.fill(LIGHT_GRAY)
     for i in range(GRID_SIZE):
         for j in range(GRID_SIZE):
@@ -180,10 +170,9 @@ def dessiner_grille(screen, grille, score):
             x = j * TILE_SIZE
             y = i * TILE_SIZE
             rect = pygame.Rect(x, y, TILE_SIZE, TILE_SIZE)
-            pygame.draw.rect(screen, TILE_COLORS[valeur], rect)
-            if valeur != 0:
-                couleur_texte = BLACK if valeur < 128 else WHITE
-                texte = FONT.render(str(valeur), True, couleur_texte)
+            pygame.draw.rect(screen, couleurs_tuiles[valeur], rect)
+            if valeur != 0: 
+                texte = FONT.render(str(valeur), True, BLACK)
                 texte_rect = texte.get_rect(center=(x + TILE_SIZE // 2, y + TILE_SIZE // 2))
                 screen.blit(texte, texte_rect)
     
@@ -193,6 +182,7 @@ def dessiner_grille(screen, grille, score):
 
 
 def jouer_2048_pygame():
+    "fonction main"
     screen = pygame.display.set_mode((SCREEN_SIZE, SCREEN_SIZE))
     pygame.display.set_caption("2048")
     grille = creer_grille_liste(GRID_SIZE)
