@@ -1,3 +1,7 @@
+VERT = "\033[32m"
+ROUGE = "\033[31m"
+RESET = "\033[0m"
+import random
 def creer_grille_liste(n):
     "crée une grille vide"
     return [[0 for _ in range(n)] for _ in range(n)]
@@ -55,7 +59,7 @@ def choix_joueur():
             print("Choix invalide, veuillez essayer à nouveau.")
 
 
-def deplacer_a_gauche(ligne):
+def deplacer_a_gauche(ligne,score):
     """
     Déplace et combine les tuiles d'une ligne vers la gauche.
     """
@@ -68,6 +72,7 @@ def deplacer_a_gauche(ligne):
     while i < len(ligne_sans_zero):
         if i < len(ligne_sans_zero) - 1 and ligne_sans_zero[i] == ligne_sans_zero[i + 1]:
             resultat.append(ligne_sans_zero[i] * 2)
+            score += ligne_sans_zero[i] * 2
             i += 2  
         else:
             resultat.append(ligne_sans_zero[i])
@@ -76,20 +81,20 @@ def deplacer_a_gauche(ligne):
     while len(resultat) < len(ligne):
         resultat.append(0)
     
-    return resultat
+    return resultat,score
 
 
-def deplacer_a_droite(ligne):
+def deplacer_a_droite(ligne,score):
     """
     Déplace et combine les tuiles d'une ligne vers la droite.
     """
     ligne_inverse = ligne[::-1]
-    ligne_deplacee = deplacer_a_gauche(ligne_inverse)
-    return ligne_deplacee[::-1]
+    ligne_deplacee,score= deplacer_a_gauche(ligne_inverse,score)
+    return ligne_deplacee[::-1], score
 
 
 
-def deplacer_haut(grille):
+def deplacer_haut(grille,score):
     """
     Déplace les tuiles de chaque colonne vers le haut.
     """
@@ -98,9 +103,10 @@ def deplacer_haut(grille):
         colonne = []
         for i in range(taille):
             colonne.append(grille[i][j])
-        colonne_deplacee = deplacer_a_gauche(colonne)
+        colonne_deplacee,score = deplacer_a_gauche(colonne,score)
         for i in range(taille):
             grille[i][j] = colonne_deplacee[i]
+    return grille, score
 
 def deplacer_bas(grille):
     """
@@ -111,36 +117,40 @@ def deplacer_bas(grille):
         colonne = []
         for i in range(taille):
             colonne.append(grille[i][j])
-        colonne_deplacee = deplacer_a_droite(colonne)
+        colonne_deplacee,score = deplacer_a_droite(colonne,score)
         for i in range(taille):
             grille[i][j] = colonne_deplacee[i]
+    return grille, score
 
 
 
-def deplacer(grille, direction):
+def deplacer(grille, direction, score):
     """
     Déplace toutes les lignes ou colonnes dans la direction spécifiée.
-    direction peut être 'gauche', 'droite', 'haut', 'bas'.
+    Renvoie la grille modifiée et le score mis à jour.
     """
-    if direction == 'q':
+    if direction == 'q': 
         for i in range(len(grille)):
-            grille[i] = deplacer_a_gauche(grille[i])
+            grille[i], score = deplacer_a_gauche(grille[i], score)
     elif direction == 'd':
         for i in range(len(grille)):
-            grille[i] = deplacer_a_droite(grille[i])
+            grille[i], score = deplacer_a_droite(grille[i], score)
     elif direction == 'z':
-        deplacer_haut(grille)
+        grille, score = deplacer_haut(grille, score)
     elif direction == 's':
-        deplacer_bas(grille)
-
+        grille, score = deplacer_bas(grille, score)
+    return grille, score
 
 
 
 def grille_est_pleine(grille):
+    " Cette fonction renvoie le nombre de zero dans la grille"
+    compteur = 0
     for element in grille:
-        if 0 in element:
-            return False
-    return True
+        for chiffre in element:
+            if chiffre == 0:
+                compteur +=1
+    return compteur
 
 def mouvement_possible(grille):
     n = len(grille)
@@ -172,6 +182,7 @@ def jouer_2048():
     """
     Boucle principale pour jouer au 2048.
     """
+    score = 0
     nb_carre = int(input("Vous voulez une grille de quelle taille ?:  "))
     grille = creer_grille_liste(nb_carre)
     ajouter_2_ou_4_aleatoire(grille)
@@ -182,16 +193,21 @@ def jouer_2048():
     
     while True:
         if case_2048_existe(grille):
-            print("Félicitations ! Vous avez atteint 2048 !")
+            print(f"{VERT}Félicitations ! Vous avez atteint 2048 !{RESET}")
             break
         if not mouvement_possible(grille):
-            print("Perdu : aucun mouvement possible.")
+            print(f"{ROUGE}Perdu: aucun mouvement possible.{RESET}")
             break
         direction = choix_joueur()
-        deplacer(grille, direction)
-        if not grille_est_pleine(grille):
+        grille, score = deplacer(grille, direction,score)
+        if grille_est_pleine(grille) >=2:
             ajouter_2_ou_4_aleatoire(grille)
+            ajouter_2_ou_4_aleatoire(grille)
+        elif grille_est_pleine(grille) == 1:
+            ajouter_2_ou_4_aleatoire(grille)
+
         print("Grille après le déplacement :")
         print(convertir_grille_en_affichage(grille))
+        print(f"Votre score est de {score}")
 
 jouer_2048()
