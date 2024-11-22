@@ -9,6 +9,7 @@ import random
 def creer_grille_liste(n):
     "crée une grille vide"
     return [[0 for _ in range(n)] for _ in range(n)]
+    
 
 import random
 

@@ -55,19 +55,6 @@ def ajouter_2_ou_4_aleatoire(grille):
 
 
 
-def choix_joueur():
-    """
-    Demande à l'utilisateur une direction et vérifie qu'elle est valide.
-    """
-    directions = {'z': "haut", 'q': "gauche", 's': "bas", 'd': "droite"}
-    while True:
-        choix = input("Choisissez une direction : z = haut, q = gauche, s = bas, d = droite\n")
-        if choix in directions:
-            return choix
-        else:
-            print("Choix invalide, veuillez essayer à nouveau.")
-
-
 def deplacer_a_gauche(ligne,score):
     """
     Déplace et combine les tuiles d'une ligne vers la gauche.
