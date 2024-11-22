@@ -204,11 +204,7 @@ def jouer_2048():
             break
         direction = choix_joueur()
         grille, score = deplacer(grille, direction,score)
-        if grille_est_pleine(grille) >=2:
-            ajouter_2_ou_4_aleatoire(grille)
-            ajouter_2_ou_4_aleatoire(grille)
-        elif grille_est_pleine(grille) == 1:
-            ajouter_2_ou_4_aleatoire(grille)
+        ajouter_2_ou_4_aleatoire(grille)
 
         print("Grille après le déplacement :")
         print(convertir_grille_en_affichage(grille))

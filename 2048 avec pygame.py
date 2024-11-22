@@ -234,11 +234,7 @@ def jouer_2048_pygame():
                     direction = 'bas'
                 if direction:
                     grille, score = deplacer(grille, direction, score)
-                    if grille_est_pleine(grille) >=2:
-                        ajouter_2_ou_4_aleatoire(grille)
-                        ajouter_2_ou_4_aleatoire(grille)
-                    elif grille_est_pleine(grille) == 1:
-                        ajouter_2_ou_4_aleatoire(grille)
+                    ajouter_2_ou_4_aleatoire(grille)
                     if not mouvement_possible(grille):
                         print(f"{ROUGE}Perdu: aucun mouvement possible{RESET}")
                         running = False
