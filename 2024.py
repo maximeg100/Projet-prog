@@ -2,6 +2,10 @@ VERT = "\033[32m"
 ROUGE = "\033[31m"
 RESET = "\033[0m"
 import random
+
+
+
+
 def creer_grille_liste(n):
     "crée une grille vide"
     return [[0 for _ in range(n)] for _ in range(n)]
