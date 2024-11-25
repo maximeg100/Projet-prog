@@ -172,13 +172,25 @@ def dessiner_grille(screen, grille, score):
             rect = pygame.Rect(x, y, TILE_SIZE, TILE_SIZE)
             pygame.draw.rect(screen, couleurs_tuiles[valeur], rect)
             if valeur != 0: 
-                texte = FONT.render(str(valeur), True, BLACK)
+                font_size = obtenir_taille_police(valeur)
+                font = pygame.font.Font(None, font_size)
+                texte = font.render(str(valeur), True, BLACK)
                 texte_rect = texte.get_rect(center=(x + TILE_SIZE // 2, y + TILE_SIZE // 2))
                 screen.blit(texte, texte_rect)
     
     texte_score = FONT.render(f"Score: {score}", True, GRAY)
     screen.blit(texte_score, (10, SCREEN_SIZE - 50))
     pygame.display.flip()
+
+def obtenir_taille_police(valeur):
+    """
+    Retourne une taille de police adaptée au nombre de chiffres de la valeur.
+    Plus la valeur est grande, plus la taille de la police est réduite.
+    """
+    if valeur == 0:
+        return 0  
+    num_digits = len(str(valeur))
+    return TILE_SIZE // (num_digits + 1) + 15
 
 
 def jouer_2048_pygame():
