@@ -27,7 +27,7 @@ couleurs_tuiles = {
 }
 
 SCREEN_SIZE = 600
-GRID_SIZE = 4
+GRID_SIZE = 2
 TILE_SIZE = SCREEN_SIZE // GRID_SIZE 
 FONT = pygame.font.Font(None, 50)
 
@@ -39,6 +39,11 @@ def creer_grille_liste(n):
 
 def ajouter_2_ou_4_aleatoire(grille):
     "Ajoute un 2 ou un 4 dans une case vide choisie aléatoirement dans la grille"
+    if nombre_cases_vides(grille) == 0:
+        return
+
+    if not mouvement_possible(grille):
+        return
     chiffre = [2,4]
     apparition = random.choice(chiffre)
     cases_vides = []
@@ -50,6 +55,13 @@ def ajouter_2_ou_4_aleatoire(grille):
     i, j= random.choice(cases_vides)
     grille[i][j] = apparition
 
+def cherche_meilleure_case(grille):
+    mlr = grille[0][0]
+    for i in range(len(grille)):
+        for j in range(len(grille)):
+            if grille[i][j] > mlr:
+                mlr = element
+    return mlr
 
 
 def deplacer_a_gauche(ligne,score):
@@ -124,16 +136,14 @@ def deplacer(grille, direction, score):
         grille, score = deplacer_bas(grille, score)
     return grille, score
 
-
-
-def grille_est_pleine(grille):
-    "renvoie le nombre de zero dans la grille"
+def nombre_cases_vides(grille):
     compteur = 0
-    for element in grille:
-        for chiffre in element:
-            if chiffre == 0:
-                compteur +=1
+    for ligne in grille:
+        for element in ligne:
+            if element == 0:
+                compteur += 1
     return compteur
+
 
 def mouvement_possible(grille):
     "renvoie true si on peut encore bouger"
@@ -157,7 +167,7 @@ def mouvement_possible(grille):
 def case_2048_existe(grille):
     "renvoie true si il y a un 2048 dans une grille"
     for element in grille:
-        if 2048 in element:
+        if 32 in element:
             return True
     return False
 
@@ -169,9 +179,9 @@ def dessiner_grille(screen, grille, score):
             valeur = grille[i][j]
             x = j * TILE_SIZE
             y = i * TILE_SIZE
-            rect = pygame.Rect(x, y, TILE_SIZE, TILE_SIZE)
+            rect = pygame.Rect(x, y, TILE_SIZE-3, TILE_SIZE -3)
             pygame.draw.rect(screen, couleurs_tuiles[valeur], rect)
-            if valeur != 0: 
+            if valeur != 0:
                 font_size = obtenir_taille_police(valeur)
                 font = pygame.font.Font(None, font_size)
                 texte = font.render(str(valeur), True, BLACK)
@@ -183,10 +193,6 @@ def dessiner_grille(screen, grille, score):
     pygame.display.flip()
 
 def obtenir_taille_police(valeur):
-    """
-    Retourne une taille de police adaptée au nombre de chiffres de la valeur.
-    Plus la valeur est grande, plus la taille de la police est réduite.
-    """
     if valeur == 0:
         return 0  
     num_digits = len(str(valeur))
@@ -223,13 +229,16 @@ def jouer_2048_pygame():
                     direction = 'bas'
                 if direction:
                     grille, score = deplacer(grille, direction, score)
-                    ajouter_2_ou_4_aleatoire(grille)
                     if not mouvement_possible(grille):
-                        print(f"{ROUGE}Perdu: aucun mouvement possible{RESET}")
+                        print(f"{ROUGE}{'-'*13}Perdu{'-'*13}\n{' '*5}Votre score est de {score}{' '*5}\nVotre meilleur case était de {cherche_meilleure_case(grille)}{RESET}")
                         running = False
-                    elif case_2048_existe(grille):
+                        break
+                    else:
+                        ajouter_2_ou_4_aleatoire(grille)
+                    if case_2048_existe(grille):
                         print(f"{VERT}Felicitations vous avez atteint 2048 !{RESET}")
                         running = False
+                    
 
     pygame.quit()
     sys.exit()
