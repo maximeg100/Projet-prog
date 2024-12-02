@@ -203,7 +203,7 @@ def jouer_2048():
             print(f"{VERT}Félicitations ! Vous avez atteint 2048 !{RESET}")
             break
         if not mouvement_possible(grille):
-            print(f"{ROUGE}Perdu: aucun mouvement possible.{RESET}")
+            print(f"{ROUGE}Perdu: aucun mouvement possible \n  Votre score est de {score}.{RESET}")
             break
         ajouter_2_ou_4_aleatoire(grille)
 

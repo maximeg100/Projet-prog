@@ -60,7 +60,7 @@ def cherche_meilleure_case(grille):
     for i in range(len(grille)):
         for j in range(len(grille)):
             if grille[i][j] > mlr:
-                mlr = element
+                mlr = grille[i][j]
     return mlr
 
 
