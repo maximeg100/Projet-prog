@@ -113,7 +113,7 @@ def deplacer_haut(grille,score):
             grille[i][j] = colonne_deplacee[i]
     return grille, score
 
-def deplacer_bas(grille):
+def deplacer_bas(grille,score):
     """
     Déplace les tuiles de chaque colonne vers le bas.
     """
@@ -197,14 +197,14 @@ def jouer_2048():
     print(convertir_grille_en_affichage(grille))
     
     while True:
+        direction = choix_joueur()
+        grille, score = deplacer(grille, direction,score)
         if case_2048_existe(grille):
             print(f"{VERT}Félicitations ! Vous avez atteint 2048 !{RESET}")
             break
         if not mouvement_possible(grille):
             print(f"{ROUGE}Perdu: aucun mouvement possible.{RESET}")
             break
-        direction = choix_joueur()
-        grille, score = deplacer(grille, direction,score)
         ajouter_2_ou_4_aleatoire(grille)
 
         print("Grille après le déplacement :")
