@@ -27,7 +27,7 @@ couleurs_tuiles = {
 }
 
 SCREEN_SIZE = 600
-GRID_SIZE = 2
+GRID_SIZE = 4
 TILE_SIZE = SCREEN_SIZE // GRID_SIZE 
 FONT = pygame.font.Font(None, 50)
 
@@ -167,7 +167,7 @@ def mouvement_possible(grille):
 def case_2048_existe(grille):
     "renvoie true si il y a un 2048 dans une grille"
     for element in grille:
-        if 32 in element:
+        if 2048 in element:
             return True
     return False
 
