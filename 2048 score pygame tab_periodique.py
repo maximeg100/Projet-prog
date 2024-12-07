@@ -67,8 +67,7 @@ def obtenir_valeur_numerique(element):
     "convertit un élément chimique en sa valeur numérique"
     valeurs_numeriques = {
         "H": 2, "He": 4, "Li": 8, "Be": 16, "C": 32,
-        "N": 64, "O": 128, "F": 256, "Ne": 512, "Na": 1024, "Mg": 2048, "Al": 4096
-    }
+        "N": 64, "O": 128, "F": 256, "Ne": 512, "Na": 1024, "Mg": 2048}
     return valeurs_numeriques.get(element, 0)
 
 def deplacer_a_gauche(ligne,score):
