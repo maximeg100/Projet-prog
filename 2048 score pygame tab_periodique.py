@@ -238,7 +238,7 @@ def jouer_2048_pygame():
                 if direction:
                     grille, score = deplacer(grille, direction, score)
                     if not mouvement_possible(grille):
-                        print(f"{ROUGE}{'-'*13}Perdu{'-'*13}\n{' '*5}Votre score est de {score}{' '*5}\nVotre meilleur case était {cherche_meilleure_case(grille)}{RESET}")
+                        print(f"{ROUGE}{'-'*13}Perdu{'-'*13}\n{' '*5}Votre score est de {score}{' '*5}\n  Votre meilleur case était {cherche_meilleure_case(grille)}{RESET}")
                         running = False
                         break
                     else:

@@ -122,8 +122,7 @@ def deplacer_bas(grille,score):
 
 
 def deplacer(grille, direction, score):
-    """Déplace toutes les lignes ou colonnes de la grille dans une direction direction
-    et calcule le score"""
+    "Déplace toutes les lignes ou colonnes de la grille dans une direction direction et calcule le score"
     if direction == 'gauche': 
         for i in range(len(grille)):
             grille[i], score = deplacer_a_gauche(grille[i], score)
@@ -137,6 +136,7 @@ def deplacer(grille, direction, score):
     return grille, score
 
 def nombre_cases_vides(grille):
+    "retourne le nombre de cases vides"
     compteur = 0
     for ligne in grille:
         for element in ligne:
@@ -230,7 +230,7 @@ def jouer_2048_pygame():
                 if direction:
                     grille, score = deplacer(grille, direction, score)
                     if not mouvement_possible(grille):
-                        print(f"{ROUGE}{'-'*13}Perdu{'-'*13}\n{' '*5}Votre score est de {score}{' '*5}\nVotre meilleur case était de {cherche_meilleure_case(grille)}{RESET}")
+                        print(f"{ROUGE}{'-'*13}Perdu{'-'*13}\n{' '*5}Votre score est de {score}{' '*5}\nVotre meilleur case était {cherche_meilleure_case(grille)}{RESET}")
                         running = False
                         break
                     else:
